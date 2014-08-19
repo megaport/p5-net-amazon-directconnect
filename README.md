@@ -41,7 +41,7 @@ perl Build.PL
 
 ## SUPPORT AND DOCUMENTATION
 
-After installing, you *might be able to* documentation for this module with the
+After installing, you *might be able to* find documentation for this module with the
 perldoc command.
 
 ```bash

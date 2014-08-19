@@ -2,7 +2,7 @@ package Net::Amazon::DirectConnect;
 
 use 5.10.0;
 use strict;
-use warnings;# FATAL => 'all';
+use warnings FATAL => 'all';
 
 use Carp;
 use JSON;
@@ -114,7 +114,9 @@ sub action {
 Get or set UserAgent object
 
     say ref($dc->ua);
-    $dc->ua(LWP::UserAgent->new);
+    my $ua = my $lwp = LWP::UserAgent->new( ssl_opts => { verify_hostname => 0 } );
+    $ua->proxy('https', 'http://127.0.0.1:8080');
+    $dc->ua($ua);
 
 =cut
 
@@ -195,7 +197,7 @@ sub _request {
         Host => $host,
         Date => POSIX::strftime( '%Y%m%dT%H%M%SZ', gmtime ),
         'Content-Type' => 'application/x-amz-json-1.1',
-        'X-Amz-Target' => sprintf('OvertureService.%s', $operation),
+        'X-Amz-Target' => $self->spec->{target_prefix} . $operation,
         exists $args{headers} ? @{$args{headers}} : ()
     ];
 
@@ -251,18 +253,9 @@ sub _validate {
 
 Cameron Daniel, C<< <cameron.daniel at megaport.com> >>
 
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-net-amazon-directconnect at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Net-Amazon-DirectConnect>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
 =head1 SUPPORT
 
-You can find documentation for this module with the perldoc command.
+You can find documentation for this module with the perldoc command or at https://github.com/megaport/p5-net-amazon-directconnect/
 
     perldoc Net::Amazon::DirectConnect
 
