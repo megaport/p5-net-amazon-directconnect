@@ -5,11 +5,17 @@ use warnings FATAL => 'all';
 
 use Test::More;
 
-plan tests => 2;
+plan skip_all => 'AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY not set' and exit unless (exists $ENV{AWS_ACCESS_KEY_ID} and exists $ENV{AWS_SECRET_ACCESS_KEY});
+plan tests => 4;
 
-BEGIN {
-    use_ok( 'Net::Amazon::DirectConnect' );
+use_ok( 'Net::Amazon::DirectConnect' );
 
-    my $dc = Net::Amazon::DirectConnect->new;
-    ok(my $connections = $dc->action('DescribeConnections'));
-}
+my $dx = Net::Amazon::DirectConnect->new;
+isa_ok($dx, 'Net::Amazon::DirectConnect', 'Net::Amazon::DirectConnect->new returns DirectConnect object');
+
+my $connections;
+eval {
+    $connections = $dx->action('DescribeConnections');
+};
+ok(exists $connections->{connections}, 'DescribeConnections API call succeeded');
+isa_ok($connections->{connections}, 'ARRAY', 'DescribeConnections returned a valid object');

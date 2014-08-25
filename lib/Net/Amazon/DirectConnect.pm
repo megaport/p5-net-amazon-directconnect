@@ -30,8 +30,8 @@ our $VERSION = '0.10';
 
     my $dc = Net::Amazon::DirectConnect->new(
         region => 'ap-southeast-2',
-        access_key => 'access key',
-        secret_key => 'secret key'
+        access_key_id => 'access key',
+        secret_key_id => 'secret key'
     );
     ...
 
@@ -43,8 +43,8 @@ our $VERSION = '0.10';
 
     my $dc = Net::Amazon::DirectConnect->new(
         region => 'ap-southeast-2',
-        access_key => 'access key',
-        secret_key => 'secret key'
+        access_key_id => 'access key',
+        secret_key_id => 'secret key'
     );
     ...
 
@@ -58,8 +58,8 @@ sub new {
 
     my %defaults = (
         region => 'us-west-1',
-        access_key_id => $ENV{AWS_ACCESS_KEY},
-        secret_key_id => $ENV{AWS_SECRET_KEY},
+        access_key_id => $ENV{AWS_ACCESS_KEY_ID},
+        secret_key_id => $ENV{AWS_SECRET_ACCESS_KEY},
 
         _ua => LWP::UserAgent->new(agent => __PACKAGE__ . '/' . $VERSION),
         _yaml => YAML::Tiny->read_string(do { local $/; <DATA> })
@@ -186,10 +186,10 @@ sub _request {
     my $self = shift;
     my $operation = shift;
     return unless @_ % 2 == 0;
-
-    croak __PACKAGE__ . '->_request: Missing operation' if !$operation;
-
     my %args = @_;
+
+    croak __PACKAGE__ . '->_request: Missing operation' unless $operation;
+    croak __PACKAGE__ . '->_request: Invalid or empty region' unless $self->{region};
 
     my $host = sprintf 'directconnect.%s.amazonaws.com/', $self->{region};
     my $headers = [
@@ -207,7 +207,7 @@ sub _request {
     $req = $self->{sig}->sign($req);
 
     my $response = $self->ua->request($req);
-    croak __PACKAGE__ . '->_request: ' . decode_json($response->content)->{__type} unless $response->is_success;
+    croak __PACKAGE__ . sprintf('->_request: %s %s', decode_json($response->content)->{__type}, decode_json($response->content)->{message} || '') unless $response->is_success;
 
     return $response;
 }
