@@ -214,10 +214,7 @@ sub _request {
 
 =head2 _validate
 
-Validate the method and arguments against the current version of the Direct Connect API (2012-10-25)
-
-This could use some work, currently it only checks that the required fields are present but should be expanded
-to look at the datatypes where applicable.
+Validate the method and required arguments against the current version of the Direct Connect API (2012-10-25)
 
 =cut
 
@@ -228,7 +225,7 @@ sub _validate {
 
     my ($spec) = grep { $_->{name} eq $method } @{$self->spec->{operations}};
     return unless ref $spec;
-    
+
     local *check_yaml = sub {
         my $s = shift;
         my $o = shift;
