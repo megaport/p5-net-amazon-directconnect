@@ -147,7 +147,14 @@ Get or set AWS region
 =cut
 
 sub region {
-    ( exists $_[1] ) ? shift->{region} = $_[1] : shift->{region};
+    my $self = shift;
+
+    if (exists $_[0]) {
+        $self->{region} = shift;
+        $self->{sig} = Net::Amazon::Signature::V4->new($self->{access_key_id}, $self->{secret_key_id}, $self->{region}, 'directconnect');
+    }
+
+    return $self->{region};
 }
 
 =head2 credentials
