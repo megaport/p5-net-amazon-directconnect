@@ -11,6 +11,9 @@ use HTTP::Request;
 use LWP::UserAgent;
 use Net::Amazon::Signature::V4;
 
+my $yaml = YAML::Tiny->read_string(do { local $/; <DATA> });
+close(DATA);
+
 =head1 NAME
 
 Net::Amazon::DirectConnect - Perl interface to the Amazon DirectConnect API
@@ -62,7 +65,7 @@ sub new {
         secret_key_id => $ENV{AWS_SECRET_ACCESS_KEY},
 
         _ua => LWP::UserAgent->new(agent => __PACKAGE__ . '/' . $VERSION),
-        _yaml => YAML::Tiny->read_string(do { local $/; <DATA> })
+        _yaml => $yaml,
     );
 
     foreach (keys %defaults) {
