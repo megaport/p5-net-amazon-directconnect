@@ -217,7 +217,18 @@ sub _request {
     $req = $self->{sig}->sign($req);
 
     my $response = $self->ua->request($req);
-    croak __PACKAGE__ . sprintf('->_request: %s %s', decode_json($response->content)->{__type}, decode_json($response->content)->{message} || '') unless $response->is_success;
+    if (!$response->is_success) {
+
+        my $content = eval { decode_json($response->content) };
+        $content ||= {};
+
+        my $err_string = '';
+        $err_string .= $content->{__type} if $content->{__type};
+        $err_string .= ' ' . $content->{message} if $content->{message};
+        $err_string = $response->content unless $err_string;
+
+        croak __PACKAGE__ . sprintf('->_request: %s', $err_string);
+    }
 
     return $response;
 }
