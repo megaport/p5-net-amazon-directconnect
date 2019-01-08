@@ -201,7 +201,7 @@ sub _request {
     croak __PACKAGE__ . '->_request: Missing operation' unless $operation;
     croak __PACKAGE__ . '->_request: Invalid or empty region' unless $self->{region};
 
-    my $host = sprintf 'directconnect.%s.amazonaws.com/', $self->{region};
+    my $host = sprintf 'directconnect.%s.amazonaws.com', $self->{region};
     my $headers = [
         Version => $self->spec->{api_version},
         Host => $host,
