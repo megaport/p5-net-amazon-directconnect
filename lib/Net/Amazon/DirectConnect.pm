@@ -220,12 +220,17 @@ sub _request {
     if (!$response->is_success) {
 
         my $content = eval { decode_json($response->content) };
-        $content ||= {};
 
         my $err_string = '';
-        $err_string .= $content->{__type} if $content->{__type};
-        $err_string .= ' ' . $content->{message} if $content->{message};
-        $err_string = $response->content unless $err_string;
+
+        if ($@) {
+            $err_string .= $@ if $@;
+            $err_string .= "Raw Content: '" . $response->content . "'";
+        }
+        else {
+            $err_string .= " $content->{__type}\n" if $content->{__type};
+            $err_string .= " $content->{message}" if $content->{message};
+        }
 
         croak __PACKAGE__ . sprintf('->_request: %s', $err_string);
     }
