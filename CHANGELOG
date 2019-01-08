@@ -1,5 +1,8 @@
 Revision history for Net-Amazon-DirectConnect
 
+0.14    8 January 2019
+        Fix trailing slash on Host header
+
 0.12    23 May 2015
         Changed to EU::MM
 

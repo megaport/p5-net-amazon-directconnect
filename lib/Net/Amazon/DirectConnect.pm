@@ -25,7 +25,7 @@ DirectConnect API version 2012-10-25
 
 =cut
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 =head1 SYNOPSIS
 
