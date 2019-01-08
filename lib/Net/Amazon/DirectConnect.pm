@@ -20,7 +20,7 @@ Net::Amazon::DirectConnect - Perl interface to the Amazon DirectConnect API
 
 =head1 VERSION
 
-Version 0.13
+Version 0.14
 DirectConnect API version 2012-10-25
 
 =cut
